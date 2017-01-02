@@ -1,5 +1,11 @@
+<%@ taglib uri="WEB-INF/EntryField.tld" prefix="c" %>
 <html>
 <body>
-<h2>Hello World!</h2>
+
+<form method="post" action="Login">
+<c:EntryField type="text" name="userId" ></c:EntryField>
+<c:EntryField type="password" name="pwd" ></c:EntryField>
+<c:EntryField type="submit" value="Login" ></c:EntryField>
+</form>
 </body>
 </html>
