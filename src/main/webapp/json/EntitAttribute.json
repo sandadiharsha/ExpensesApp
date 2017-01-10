@@ -1,0 +1,30 @@
+{
+"Entity":[
+{
+	"name": "SECURITY_USERS",
+	"displayName": "Security User",
+		"Attributes":[
+			{
+				"name":"USER_NAME",
+				"type":"C2",
+				"displayName":"User Name"
+			},
+			{
+				"name":"PASS_WORD",
+				"type":"C2",
+				"displayName":"Password"
+			},
+			{
+				"name":"ACTIVE_FLAG",
+				"type":"BO",
+				"displayName":"Active Flag"
+			},
+			{
+				"name":"RESET_FLAG",
+				"type":"BO",
+				"displayName":"Reset Flag"
+			}				
+		]
+	}
+]
+}

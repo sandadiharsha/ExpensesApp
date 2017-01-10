@@ -7,10 +7,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -20,12 +18,6 @@ import org.json.simple.parser.ParseException;
 import com.har.ui.model.LoginDTO;
 
 public class LoginServiceImpl implements LoginService {
-	final private static Map<String, String> users = new HashMap<>();
-	static {
-
-		users.put("TEST", "Test");
-		users.put("HSANDADI", "Harsha");
-	}
 
 	@Override
 	public LoginDTO findLoginUser(String userName, String password) {
@@ -65,17 +57,16 @@ public class LoginServiceImpl implements LoginService {
 				LoginDTO dto = new LoginDTO(userName, password);
 				list.add(dto);
 			}
-		}catch(UnsupportedEncodingException uo){
-			
-		}catch(FileNotFoundException f){
-			
-		}catch(IOException ie){
-			
-		}catch(ParseException p){
-			
-		}
-		finally{
-			
+		} catch (UnsupportedEncodingException uo) {
+
+		} catch (FileNotFoundException f) {
+
+		} catch (IOException ie) {
+
+		} catch (ParseException p) {
+
+		} finally {
+
 		}
 		return list;
 	}
