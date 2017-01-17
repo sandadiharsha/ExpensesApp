@@ -3,6 +3,7 @@ package com.har.ui.service;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -79,6 +80,37 @@ public class LoginServiceImpl implements LoginService {
 		String reponsePath = "";
 		reponsePath = new File(fullPath).getPath() + File.separatorChar + "json" + File.separator + usersJson;
 		return reponsePath;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void saveCreateLoginUser(final LoginDTO dto){
+		
+		JSONObject obj = new JSONObject();
+		obj.put("userName", dto.getUserName());
+		obj.put("passWord", dto.getPassWord());
+		JSONArray msg = new JSONArray();
+		List<LoginDTO> list=getListOfLoginUsers();
+		for(LoginDTO dao:list){
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("userName", dao.getUserName());
+			jsonObject.put("passWord", dao.getPassWord());
+			msg.add(jsonObject);
+		}
+		msg.add(obj);
+		JSONObject obj1 = new JSONObject();
+		obj1.put("Security_users", msg);
+		try {
+
+			FileWriter file = new FileWriter(getPath("securityUsers.json"));
+			file.write(obj1.toJSONString());
+			file.flush();
+			file.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		
 	}
 
 }

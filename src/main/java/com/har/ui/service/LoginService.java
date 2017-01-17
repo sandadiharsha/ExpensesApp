@@ -11,5 +11,6 @@ import com.har.ui.model.LoginDTO;
  */
 public interface LoginService {
 	public LoginDTO findLoginUser(final String userName,final String password);
+	public void saveCreateLoginUser(final LoginDTO dto);
 
 }

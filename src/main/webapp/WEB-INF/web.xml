@@ -11,5 +11,13 @@
 <servlet-name>Login</servlet-name>
 <url-pattern>/Login</url-pattern>
 </servlet-mapping>
+<servlet>
+<servlet-name>SignUp</servlet-name>
+<servlet-class>com.har.servlet.SignUp</servlet-class>
+</servlet>
+<servlet-mapping>
+<servlet-name>SignUp</servlet-name>
+<url-pattern>/SignUp</url-pattern>
+</servlet-mapping>
   <display-name>Archetype Created Web Application</display-name>
 </web-app>
