@@ -12,7 +12,7 @@ import com.har.ui.model.LoginDTO;
 import com.har.ui.service.LoginService;
 import com.har.ui.service.LoginServiceImpl;
 
-public class Login extends HttpServlet {
+public class MemberInformation extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		PrintWriter out = resp.getWriter();
@@ -24,10 +24,9 @@ public class Login extends HttpServlet {
 			out.println("Login failed.");
 		else {
 			out.println("Login executed");
-			req.getSession().setAttribute("loginUser", valueObject);
+			req.getSession().getAttribute("loginUser");
 		}
-		//System.out.println("Login Servlet Executed");
-		req.getRequestDispatcher("MemberInformation.jsp").forward(req, resp);
+		System.out.println("Login Servlet Executed");
 
 	}
 }
