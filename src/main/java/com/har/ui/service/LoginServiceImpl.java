@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -17,6 +18,8 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import com.har.ui.model.LoginDTO;
+import com.har.ui.model.Member;
+import com.har.util.ExpensesUtil;
 
 public class LoginServiceImpl implements LoginService {
 
@@ -81,16 +84,16 @@ public class LoginServiceImpl implements LoginService {
 		reponsePath = new File(fullPath).getPath() + File.separatorChar + "json" + File.separator + usersJson;
 		return reponsePath;
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public void saveCreateLoginUser(final LoginDTO dto){
-		
+	public void saveCreateLoginUser(final LoginDTO dto) {
+
 		JSONObject obj = new JSONObject();
 		obj.put("userName", dto.getUserName());
 		obj.put("passWord", dto.getPassWord());
 		JSONArray msg = new JSONArray();
-		List<LoginDTO> list=getListOfLoginUsers();
-		for(LoginDTO dao:list){
+		List<LoginDTO> list = getListOfLoginUsers();
+		for (LoginDTO dao : list) {
 			JSONObject jsonObject = new JSONObject();
 			jsonObject.put("userName", dao.getUserName());
 			jsonObject.put("passWord", dao.getPassWord());
@@ -110,7 +113,126 @@ public class LoginServiceImpl implements LoginService {
 			e.printStackTrace();
 		}
 
-		
+	}
+
+	@SuppressWarnings("unchecked")
+	public void saveCreateMember(final Member member) {
+		JSONObject members = new JSONObject();
+		JSONArray memberList = new JSONArray();
+		if (member != null) {
+			JSONObject memberJSON = new JSONObject();
+			JSONArray personList = new JSONArray();
+			JSONObject person = new JSONObject();
+			person.put("prefix", member.getPrefix());
+			person.put("firstName", member.getFirstName());
+			person.put("middleName", member.getMiddleName());
+			person.put("lastName", member.getLastName());
+			person.put("suffix", member.getSuffix());
+			person.put("dateOfBirth", ExpensesUtil.getStringFromDate(member.getDateOfBirth()));
+			person.put("gender", member.getGender());
+			personList.add(person);
+			memberJSON.put("person", personList);
+			JSONObject securityUser = new JSONObject();
+			JSONArray securityUserList = new JSONArray();
+			securityUser.put("userName", member.getDto().getUserName());
+			securityUserList.add(securityUser);
+			memberJSON.put("securityUser", securityUserList);
+			memberList.add(memberJSON);
+		}
+		List<Member> membersFromDb= getListOfMembers();
+		if(!ExpensesUtil.isEmptyList(membersFromDb)){
+			for(Member dao:membersFromDb){
+				JSONObject memberJSON = new JSONObject();
+				JSONArray personList = new JSONArray();
+				JSONObject person = new JSONObject();
+				person.put("prefix", dao.getPrefix());
+				person.put("firstName", dao.getFirstName());
+				person.put("middleName", dao.getMiddleName());
+				person.put("lastName", dao.getLastName());
+				person.put("suffix", dao.getSuffix());
+				person.put("dateOfBirth", ExpensesUtil.getStringFromDate(dao.getDateOfBirth()));
+				person.put("gender", dao.getGender());
+				personList.add(person);
+				memberJSON.put("person", personList);
+				JSONObject securityUser = new JSONObject();
+				JSONArray securityUserList = new JSONArray();
+				securityUser.put("userName", dao.getDto().getUserName());
+				securityUserList.add(securityUser);
+				memberJSON.put("securityUser", securityUserList);
+				memberList.add(memberJSON);
+			}
+		}
+		members.put("members", memberList);
+		try {
+
+			FileWriter file = new FileWriter(getPath("members.json"));
+			file.write(members.toJSONString());
+			file.flush();
+			file.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private List<Member> getListOfMembers() {
+		List<Member> members = new ArrayList<Member>();
+		try {
+			JSONParser parser = new JSONParser();
+			String path = getPath("members.json");
+
+			Object obj = parser.parse(new FileReader(path));
+
+			JSONObject jsonObject = (JSONObject) obj;
+
+			JSONArray memberList = (JSONArray) jsonObject.get("members");
+			if (!ExpensesUtil.isEmptyList(memberList)) {
+				Iterator<JSONObject> iterator = memberList.iterator();
+				while (iterator.hasNext()) {
+					JSONObject record = iterator.next();
+					JSONArray persons = (JSONArray) record.get("person");
+					Member member = null;
+					if (!ExpensesUtil.isEmptyList(persons)) {
+						Iterator<JSONObject> ite = persons.iterator();
+						while (ite.hasNext()) {
+							JSONObject person = ite.next();
+							String prefix = (String) person.get("prefix");
+							String firstName = (String) person.get("firstName");
+							String middleName = (String) person.get("middleName");
+							String lastName = (String) person.get("lastName");
+							String suffix = (String) person.get("suffix");
+							Date dateOfBirth = ExpensesUtil.getDateFromString((String) person.get("dateOfBirth"));
+							String gender = (String) person.get("gender");
+							member = new Member(prefix, firstName, middleName, lastName, suffix, dateOfBirth, gender,
+									null);
+
+						}
+					}
+					JSONArray users = (JSONArray) record.get("securityUser");
+					if (!ExpensesUtil.isEmptyList(users)) {
+						Iterator<JSONObject> ite = users.iterator();
+						while (ite.hasNext()) {
+							JSONObject user = ite.next();
+							String userName = (String) user.get("userName");
+							LoginDTO dto = new LoginDTO(userName, null);
+							member.setDto(dto);
+						}
+					}
+					members.add(member);
+				}
+			}
+		} catch (UnsupportedEncodingException uo) {
+
+		} catch (FileNotFoundException f) {
+
+		} catch (IOException ie) {
+
+		} catch (ParseException p) {
+
+		} finally {
+
+		}
+		return members;
 	}
 
 }
